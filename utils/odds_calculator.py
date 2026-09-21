@@ -16,8 +16,12 @@ THE IDEA:
   - We assume you play smart: if a Great card shows up, you use it; if
     there's still a free "use" slot left, you fill it with an Okay card.
   - The "expected value" is the average number of points you'd walk away
-    with, shown as a percentage of the best possible outcome (using nothing
-    but Great cards).
+    with, shown as a percentage of a single Great card's value. This lets
+    you compare pack types directly: a Jumbo pack (draws more, uses the
+    same number) scores at least as high as a Normal pack, and a Mega
+    pack (uses more than one) scores at least as high as a Jumbo pack,
+    with the extra coming from the expected value of the additional
+    card(s) you get to use.
 """
 
 from math import comb
