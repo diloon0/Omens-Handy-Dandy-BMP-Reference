@@ -8,6 +8,7 @@ tweak the math here without worrying about breaking the window.
 THE IDEA:
   - You mark some tarot cards as "Great" (worth 1 full point if you use them)
   - You mark some tarot cards as "Okay" (worth 0.5 points if you use them)
+  - You mark some tarot cards as "Blocked" (removed from the pool)
   - Every other tarot card is worth 0 points.
   - An Arcana Pack shows you `offer_size` random cards (no repeats) out of
     every tarot card that exists in the game, and lets you use `use_size`
@@ -22,11 +23,12 @@ THE IDEA:
 from math import comb
 
 
-def calculate_expected_value_percent(great_count, okay_count, total_card_count,
+def calculate_expected_value_percent(great_count, okay_count, blocked_count, total_card_count,
                                       offer_size, use_size):
     """
     great_count      -> how many cards are currently marked "Great"
     okay_count       -> how many cards are currently marked "Okay"
+    blocked_count    -> how many cards are currently marked "Blocked"
     total_card_count -> how many tarot cards exist in total (the whole pool)
     offer_size       -> how many cards the pack shows you
     use_size         -> how many of those cards you're allowed to use
@@ -34,7 +36,8 @@ def calculate_expected_value_percent(great_count, okay_count, total_card_count,
     Returns a number from 0 to 100 (a percentage).
     """
 
-    other_count = total_card_count - great_count - okay_count
+    other_count = total_card_count - great_count - okay_count - blocked_count 
+    available_count = total_card_count - blocked_count
 
     # Safety checks so the program never crashes from odd inputs.
     if total_card_count <= 0 or offer_size <= 0 or use_size <= 0:
@@ -42,7 +45,7 @@ def calculate_expected_value_percent(great_count, okay_count, total_card_count,
     if other_count < 0:
         other_count = 0
 
-    ways_to_draw_offer = comb(total_card_count, offer_size)
+    ways_to_draw_offer = comb(available_count, offer_size)
     if ways_to_draw_offer == 0:
         return 0.0
 
@@ -81,7 +84,7 @@ def calculate_expected_value_percent(great_count, okay_count, total_card_count,
 
             total_points += probability_of_this_combo * points_from_this_combo
 
-    best_possible_points = use_size * 1.0
+    best_possible_points = 1.0  #use_size * 1.0
     expected_value_percent = (total_points / best_possible_points) * 100
 
     return expected_value_percent

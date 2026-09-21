@@ -33,6 +33,7 @@ CARD_COLORS = {
     "none": "#2b2b40",
     "great": "#3ddc73",
     "okay": "#e8c547",
+    "blocked": "#7d7d82"
 }
 
 
@@ -168,7 +169,13 @@ class TarotOddsTab(BaseTab):
 
     def on_drag_start(self, event):
         shift_held = (event.state & 0x0001) != 0
-        self.drag_target_state = "okay" if shift_held else "great"
+        ctrl_held = (event.state & 0x0004) != 0
+        if ctrl_held:
+            self.drag_target_state = "blocked"
+        elif shift_held:
+            self.drag_target_state = "okay"
+        else:
+            self.drag_target_state = "great"
 
         card_tile = self._find_card_tile(event)
         if card_tile is None:
@@ -207,6 +214,7 @@ class TarotOddsTab(BaseTab):
     def update_expected_value(self):
         great_count = sum(1 for t in self.card_tiles if t.state == "great")
         okay_count = sum(1 for t in self.card_tiles if t.state == "okay")
+        blocked_count = sum(1 for t in self.card_tiles if t.state == "blocked")
         total_card_count = len(get_all_cards())
 
         pack_size_name = self.selected_pack_size.get()
@@ -215,6 +223,7 @@ class TarotOddsTab(BaseTab):
         ev_percent = calculate_expected_value_percent(
             great_count=great_count,
             okay_count=okay_count,
+            blocked_count=blocked_count,
             total_card_count=total_card_count,
             offer_size=pack["offer"],
             use_size=pack["use"],
