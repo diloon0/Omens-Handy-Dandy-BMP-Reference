@@ -33,7 +33,7 @@ TAROT_GROUPS = [
             {"name": "The Hierophant", "image": "the_hierophant.png"},  # Bonus
             {"name": "The Lovers", "image": "the_lovers.png"},          # Wild
             {"name": "The Chariot", "image": "the_chariot.png"},        # Steel
-            {"name": "Justice", "image": "justice.png"},                # Glass
+#            {"name": "Justice", "image": "justice.png"},                # Glass
             {"name": "The Devil", "image": "the_devil.png"},            # Gold
             {"name": "The Tower", "image": "the_tower.png"},            # Stone
         ],
