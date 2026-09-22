@@ -48,7 +48,7 @@ class CardTile(tk.Frame):
         self.state = "none"
         self.pack_propagate(False)
 
-        self.tk_image = load_card_image(image_filename, size=(68, 68))
+        self.tk_image = load_card_image(image_filename, size=(85, 110))
 
         self.image_label = tk.Label(self, bg=CARD_COLORS["none"])
         if self.tk_image is not None:
@@ -60,7 +60,7 @@ class CardTile(tk.Frame):
                 font=("Segoe UI", 7, "italic"),
                 wraplength=70,
             )
-        self.image_label.pack(pady=(8, 3))
+        self.image_label.pack(pady=(0, 0))
 
         self.name_label = tk.Label(
             self, text=card_name, bg=CARD_COLORS["none"], fg="white",
@@ -79,7 +79,21 @@ class CardTile(tk.Frame):
     def set_state(self, new_state):
         self.state = new_state
         color = CARD_COLORS[new_state]
-        self.configure(bg=color)
+        if new_state == "none":
+            self.configure(
+                bg=color,
+                bd=2,
+                relief="ridge",
+                highlightthickness=0,
+            )
+        else:
+            self.configure(
+                bg=color,
+                bd=0,
+                highlightbackground=color,
+                highlightcolor=color,
+                highlightthickness=2,
+            )
         self.image_label.configure(bg=color)
         self.name_label.configure(bg=color)
 
