@@ -42,13 +42,13 @@ class CardTile(tk.Frame):
 
     def __init__(self, parent, tab, card_name, image_filename):
         super().__init__(parent, bg=CARD_COLORS["none"], bd=2, relief="ridge",
-                          width=110, height=150)
+                          width=85, height=118)
         self.tab = tab
         self.card_name = card_name
         self.state = "none"
         self.pack_propagate(False)
 
-        self.tk_image = load_card_image(image_filename, size=(90, 90))
+        self.tk_image = load_card_image(image_filename, size=(68, 68))
 
         self.image_label = tk.Label(self, bg=CARD_COLORS["none"])
         if self.tk_image is not None:
@@ -57,14 +57,14 @@ class CardTile(tk.Frame):
             self.image_label.configure(
                 text="(no image set)",
                 fg="#8888a0",
-                font=("Segoe UI", 8, "italic"),
-                wraplength=90,
+                font=("Segoe UI", 7, "italic"),
+                wraplength=70,
             )
-        self.image_label.pack(pady=(10, 4))
+        self.image_label.pack(pady=(8, 3))
 
         self.name_label = tk.Label(
             self, text=card_name, bg=CARD_COLORS["none"], fg="white",
-            font=("Segoe UI", 9, "bold"), wraplength=100, justify="center",
+            font=("Segoe UI", 8, "bold"), wraplength=78, justify="center",
         )
         self.name_label.pack()
 
@@ -146,23 +146,35 @@ class TarotOddsTab(BaseTab):
 
     # ---------- CARD GRID ----------
 
+    GROUPS_PER_ROW = 2
+    CARDS_PER_GROUP_ROW = 4
+
     def _build_card_grid(self):
         scroll_area = ScrollableFrame(self.content, bg="#1f1f2e")
         scroll_area.pack(fill="both", expand=True, padx=10, pady=10)
 
-        for group in TAROT_GROUPS:
-            group_label = tk.Label(
-                scroll_area.inner, text=group["group_name"],
-                bg="#1f1f2e", fg="#e8c547", font=("Segoe UI", 13, "bold"),
-            )
-            group_label.pack(anchor="w", pady=(15, 5), padx=5)
+        for group_index, group in enumerate(TAROT_GROUPS):
+            grid_row = group_index // self.GROUPS_PER_ROW
+            grid_col = group_index % self.GROUPS_PER_ROW
 
-            row_frame = tk.Frame(scroll_area.inner, bg="#1f1f2e")
-            row_frame.pack(anchor="w", padx=5)
+            group_block = tk.Frame(scroll_area.inner, bg="#1f1f2e")
+            group_block.grid(row=grid_row, column=grid_col, sticky="nw",
+                              padx=15, pady=10)
+
+            group_label = tk.Label(
+                group_block, text=group["group_name"],
+                bg="#1f1f2e", fg="#e8c547", font=("Segoe UI", 13, "bold"),
+                wraplength=380, justify="left",
+            )
+            group_label.pack(anchor="w", pady=(0, 5))
+
+            row_frame = tk.Frame(group_block, bg="#1f1f2e")
+            row_frame.pack(anchor="w")
 
             for i, card in enumerate(group["cards"]):
                 tile = CardTile(row_frame, self, card["name"], card.get("image"))
-                tile.grid(row=i // 6, column=i % 6, padx=6, pady=6)
+                tile.grid(row=i // self.CARDS_PER_GROUP_ROW,
+                          column=i % self.CARDS_PER_GROUP_ROW, padx=6, pady=6)
                 self.card_tiles.append(tile)
 
     # ---------- DRAG-SELECT LOGIC ----------
